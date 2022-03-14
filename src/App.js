@@ -1,23 +1,58 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { FC, useMemo } from "react";
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from "@solana/wallet-adapter-react";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import {
+  getLedgerWallet,
+  getPhantomWallet,
+  getSlopeWallet,
+  getSolflareWallet,
+  getSolletExtensionWallet,
+  getSolletWallet,
+  getTorusWallet,
+} from "@solana/wallet-adapter-wallets";
+// import Header from "./components/Header";
+// import Home from "./components/Home";
+// import "./App.css";
+// import { BrowserRouter } from "react-router-dom";
+import { ENDPOINT } from "./helpers/utils";
+
 
 function App() {
+  // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
+  const network = WalletAdapterNetwork.Devnet;
+
+  const wallets = useMemo(
+    () => [
+      getPhantomWallet(),
+      getSlopeWallet(),
+      getSolflareWallet(),
+      getTorusWallet({
+        options: { clientId: "Get a client ID @ https://developer.tor.us" },
+      }),
+      getLedgerWallet(),
+      getSolletWallet({ network }),
+      getSolletExtensionWallet({ network }),
+    ],
+    [network]
+  );
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ConnectionProvider endpoint={ENDPOINT}>
+        <WalletProvider wallets={wallets}>
+          gm
+          {/* <SnackBarProvider>
+            <BrowserRouter> */}
+              {/* <Header />
+              <Home /> */}
+              {/* <Sample /> */}
+            {/* </BrowserRouter>
+          </SnackBarProvider> */}
+        </WalletProvider>
+      </ConnectionProvider>
     </div>
   );
 }
