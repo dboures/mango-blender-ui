@@ -13,8 +13,8 @@ import {
   getSolletWallet,
   getTorusWallet,
 } from "@solana/wallet-adapter-wallets";
-// import Header from "./components/Header";
-// import Home from "./components/Home";
+import Header from "./components/Header";
+import Home from "./components/Home";
 // import "./App.css";
 // import { BrowserRouter } from "react-router-dom";
 import { ENDPOINT } from "./helpers/utils";
@@ -43,11 +43,10 @@ function App() {
     <div className="App">
       <ConnectionProvider endpoint={ENDPOINT}>
         <WalletProvider wallets={wallets}>
-          gm
           {/* <SnackBarProvider>
             <BrowserRouter> */}
-              {/* <Header />
-              <Home /> */}
+              <Header />
+              <Home />
               {/* <Sample /> */}
             {/* </BrowserRouter>
           </SnackBarProvider> */}

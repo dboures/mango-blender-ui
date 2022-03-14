@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@saberhq/solana-contrib": "^1.7.4",
-    "@saberhq/token-utils": "^1.7.4",
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
+    "@mui/material": "^5.5.1",
+    "@mui/styled-engine": "^5.4.4",
     "@solana/wallet-adapter-base": "^0.7.0",
     "@solana/wallet-adapter-react": "^0.13.1",
     "@solana/wallet-adapter-react-ui": "^0.6.1",
