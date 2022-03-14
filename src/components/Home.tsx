@@ -1,4 +1,5 @@
 import { Button } from "@mui/material";
+import { Provider } from "@project-serum/anchor";
 import {
   AnchorWallet,
   useAnchorWallet,
@@ -9,6 +10,7 @@ import React from "react";
 import { useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { loadQuoteBalance } from "../services/service.balance";
+import { createPool } from "../services/service.pool";
 
 export interface Balance {
     name: string;
@@ -20,13 +22,15 @@ function Home() {
   const connection = useConnection().connection;
   const wallet = useWallet();
   const anchorWallet = useAnchorWallet() as AnchorWallet;
+  const provider = new Provider(connection, anchorWallet, {});
 
   // useState here
   const [quoteBalance, setQuoteBalance] = React.useState(0);
+  const [newPoolName, setNewPoolName] = React.useState("");
 
 
   const refreshWalletBalances = () => { // TODO: load other balances?
-    loadQuoteBalance(connection, wallet.publicKey).then((updatedQuoteBalance) => {
+    loadQuoteBalance(provider).then((updatedQuoteBalance) => {
       setQuoteBalance(updatedQuoteBalance.amount);
     });
   };
@@ -38,20 +42,23 @@ function Home() {
   }, [wallet?.connected]);
 
 
-//   const handleCreatePool = () => {
-//     TraderService.createTrader(provider).then(() => {
-//       refreshTrader();
-//     });
-//   };
+  const handleCreatePool = () => {
+    createPool(newPoolName, provider);
+    // .then(() => {
+    //   refreshTrader();
+    // });
+  };
 
   return (
     <>
       <div className="row">
         <h2>Dashboard Here</h2>
         {quoteBalance}
-        {/* {wallet.connected && trader.length > 0 ? null : wallet.connected ? ( // <span>Trader Account: {trader}</span>
-          <Button onClick={() => handleCreateTrader()}>Create Trader</Button>
-        ) : null} */}
+        {wallet.connected ? ( // <span>Trader Account: {trader}</span>
+          <Button onClick={() => handleCreatePool()}>Create Pool</Button>
+        ) : null}
+        <h3>Input</h3>
+         <input type="text" name="newPoolName" value={newPoolName} onChange={e => setNewPoolName(e.target.value)} />
       </div>
     </>
   );
