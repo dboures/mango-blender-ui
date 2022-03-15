@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { loadQuoteBalance } from "../services/service.balance";
 import { createPool } from "../services/service.pool";
+import Pools from "./Pools";
 
 export interface Balance {
     name: string;
@@ -59,6 +60,9 @@ function Home() {
         ) : null}
         <h3>Input</h3>
          <input type="text" name="newPoolName" value={newPoolName} onChange={e => setNewPoolName(e.target.value)} />
+      </div>
+      <div className="row">
+        <Pools/>
       </div>
     </>
   );

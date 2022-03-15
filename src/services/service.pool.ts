@@ -9,6 +9,7 @@ import {
   SystemProgram,
   Transaction,
 } from "@solana/web3.js";
+import { Pool } from "../components/Pools";
 import {
   derivePoolAddress,
   derivePoolIouAddress,
@@ -55,4 +56,21 @@ export async function createPool(poolName: string, provider: Provider) {
   transaction.add(instruction);
   const tx = await provider.send(transaction, [], {skipPreflight: true});
   console.log(tx);
+}
+
+
+export async function fetchPools(provider: Provider) {
+  const program = loadProgram(provider);
+  const rawPools = await program.account.pool.all();
+  const pools = rawPools.map((rawPool) => {
+    return {
+      key: rawPool.publicKey,
+      poolName: rawPool.account.poolName,
+      poolBump: rawPool.account.poolBump,
+      iouMintBump: rawPool.account.iouMintBump,
+      iouMint: rawPool.account.iouMint,
+      admin: rawPool.account.admin,
+    } as Pool
+  })
+  return pools.sort((a, b) => (a.poolName > b.poolName) ? 1 : ((b.poolName > a.poolName) ? -1 : 0))
 }

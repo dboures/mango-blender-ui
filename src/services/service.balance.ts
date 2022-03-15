@@ -20,7 +20,6 @@ export async function loadQuoteBalance(provider: Provider): Promise<Balance> {
     if (tokenData.value) {
       const tokenInfo = (tokenData.value?.data as ParsedAccountData).parsed
         .info;
-      console.log(tokenInfo);
 
       // get USDC token account
       const tokenMint = tokenInfo.mint;
