@@ -1,6 +1,5 @@
 import { BN, Program, Provider } from "@project-serum/anchor";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
-import { SolanaProvider } from "@saberhq/solana-contrib";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Commitment, PublicKey } from "@solana/web3.js";
 import data from "../mango_blender.json";

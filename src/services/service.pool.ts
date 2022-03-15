@@ -54,23 +54,30 @@ export async function createPool(poolName: string, provider: Provider) {
   );
 
   transaction.add(instruction);
-  const tx = await provider.send(transaction, [], {skipPreflight: true});
+  const tx = await provider.send(transaction, [], { skipPreflight: true });
   console.log(tx);
 }
-
 
 export async function fetchPools(provider: Provider) {
   const program = loadProgram(provider);
   const rawPools = await program.account.pool.all();
-  const pools = rawPools.map((rawPool) => {
-    return {
-      key: rawPool.publicKey,
-      poolName: rawPool.account.poolName,
-      poolBump: rawPool.account.poolBump,
-      iouMintBump: rawPool.account.iouMintBump,
-      iouMint: rawPool.account.iouMint,
-      admin: rawPool.account.admin,
-    } as Pool
-  })
-  return pools.sort((a, b) => (a.poolName > b.poolName) ? 1 : ((b.poolName > a.poolName) ? -1 : 0))
+  const pools = await Promise.all(
+    rawPools.map(async (rawPool) => {
+      const [mangoAccount] = await derviePoolOwnedMangoAccount(
+        rawPool.publicKey
+      );
+      return {
+        key: rawPool.publicKey,
+        poolName: rawPool.account.poolName,
+        poolBump: rawPool.account.poolBump,
+        iouMintBump: rawPool.account.iouMintBump,
+        iouMint: rawPool.account.iouMint,
+        admin: rawPool.account.admin,
+        mangoAccount,
+      } as Pool;
+    })
+  );
+  return pools.sort((a, b) =>
+    a.poolName > b.poolName ? 1 : b.poolName > a.poolName ? -1 : 0
+  );
 }

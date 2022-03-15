@@ -17,6 +17,7 @@ import {
 } from "@solana/wallet-adapter-react";
 import React from "react";
 import { useEffect } from "react";
+import Link from "@material-ui/core/Link";
 import { PublicKey } from "@solana/web3.js";
 import { fetchPools } from "../services/service.pool";
 
@@ -27,6 +28,7 @@ export interface Pool {
   iouMintBump: number;
   iouMint: PublicKey;
   admin: PublicKey;
+  mangoAccount: PublicKey;
 }
 
 function Pools() {
@@ -58,6 +60,7 @@ function Pools() {
             <TableHead>
               <TableRow>
                 <TableCell>Pool Name</TableCell>
+                <TableCell>Mango Account</TableCell>
                 <TableCell>Admin</TableCell>
                 <TableCell>View Mango Account</TableCell>
                 <TableCell>Buy Into/Redeem From Pool</TableCell>
@@ -71,13 +74,20 @@ function Pools() {
                     return (
                       <TableRow key={pool.key.toString()}>
                         <TableCell>{pool.poolName}</TableCell>
+                        <TableCell>{pool.key.toBase58()}</TableCell>
                         <TableCell>{pool.admin.toBase58()}</TableCell>
                         <TableCell>
-                          <Button
-                            onClick={() => console.log("devs do something")}
-                          >
-                            View Mango Account
-                          </Button>
+                          {/* TODO: mainnet (when it's time) */}
+                          <a
+                            href={
+                              "https://devnet.mango.markets/account?pubkey=" +
+                              pool.mangoAccount.toBase58()
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                          > 
+                            {pool.mangoAccount.toBase58()}
+                          </a>
                         </TableCell>
                         <TableCell>
                           <Button
