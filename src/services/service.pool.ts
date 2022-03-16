@@ -54,7 +54,7 @@ export async function createPool(poolName: string, provider: Provider) {
   );
 
   transaction.add(instruction);
-  const tx = await provider.send(transaction, [], { skipPreflight: true });
+  const tx = await provider.send(transaction, [], {});
   console.log(tx);
 }
 

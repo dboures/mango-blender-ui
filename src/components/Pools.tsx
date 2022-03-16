@@ -17,9 +17,9 @@ import {
 } from "@solana/wallet-adapter-react";
 import React from "react";
 import { useEffect } from "react";
-import Link from "@material-ui/core/Link";
 import { PublicKey } from "@solana/web3.js";
 import { fetchPools } from "../services/service.pool";
+import { buyIntoPool } from "../services/service.transact";
 
 export interface Pool {
   key: PublicKey;
@@ -55,6 +55,7 @@ function Pools() {
     <>
       <div className="row">
         <h2>Pool Here</h2>
+        {/* TODO: make table sortable */}
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHead>
@@ -91,9 +92,9 @@ function Pools() {
                         </TableCell>
                         <TableCell>
                           <Button
-                            onClick={() => console.log("devs do something")}
+                            onClick={() => buyIntoPool(provider, pool, 1)}
                           >
-                            GOTO buy/withdraw
+                            BUY 10,000
                           </Button>
                         </TableCell>
                       </TableRow>

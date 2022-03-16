@@ -1,6 +1,7 @@
+import { MangoCache, MangoClient, MangoGroup, NodeBank, QUOTE_INDEX, RootBank } from "@blockworks-foundation/mango-client";
 import { BN, Program, Provider } from "@project-serum/anchor";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
-import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Commitment, PublicKey } from "@solana/web3.js";
 import data from "../mango_blender.json";
 require("dotenv").config();
@@ -31,7 +32,7 @@ if (process.env.REACT_APP_NETWORK === "MAINNET") {
   ENDPOINT = process.env.REACT_APP_DEVNET_ENDPOINT as string;
   //TODO: use IDS.json
   quoteTokenMint = new PublicKey(
-    "5vQp48Wx55Ft1PUAx8qWbsioNaLeXWVkyCq2XpQSv34M"
+    "8FRFC6MoGGkMFQwngccyu69VnYbzykGeez7ignHVAFSN"
   );
   mangoGroupPubkey = new PublicKey('5vQp48Wx55Ft1PUAx8qWbsioNaLeXWVkyCq2XpQSv34M')
 } else {
@@ -68,6 +69,26 @@ export async function findAssociatedTokenAddress(
   )[0];
 }
 
+export async function getOrCreateATA(provider: Provider, mint: PublicKey) {
+  const address = await findAssociatedTokenAddress(provider.wallet.publicKey, mint);
+  const accountInfo = await provider.connection.getAccountInfo(address);
+  if (accountInfo) {
+    return { address, instruction: null };
+  } else {
+    return {
+      address,
+      instruction: Token.createAssociatedTokenAccountInstruction(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        mint,
+        address,
+        provider.wallet.publicKey,
+        provider.wallet.publicKey
+      )
+    };
+  }
+}
+
 export async function derviePoolOwnedMangoAccount(
   poolAddress: PublicKey
 ): Promise<[PublicKey, number]> {
@@ -101,4 +122,25 @@ export async function derivePoolIouAddress(
     [poolNameBytes, poolAdminPubkey.toBytes(), utf8.encode("iou")],
     BLENDER_PROG_ID
   );
+}
+
+
+export async function loadMangoObjects(provider: Provider): Promise<[MangoGroup, MangoCache, RootBank, NodeBank[]]> {
+  const client = new MangoClient(provider.connection, MANGO_PROG_ID);
+  const mangoGroup = await client.getMangoGroup(mangoGroupPubkey);
+    const [rootBanks, mangoCache] = await Promise.all([
+      mangoGroup.loadRootBanks(provider.connection),
+      mangoGroup.loadCache(provider.connection)
+    ]);
+    const nodeBanks = await rootBanks[QUOTE_INDEX]?.loadNodeBanks(
+      provider.connection
+    );
+    if (!rootBanks[QUOTE_INDEX]) {
+      throw new Error('Error loading quote root bank');
+    }
+    if(!nodeBanks) {
+      throw new Error('Error loading node banks');
+    }
+    const quoteRootBank = rootBanks[QUOTE_INDEX] as RootBank;
+    return [mangoGroup, mangoCache, quoteRootBank, nodeBanks]
 }

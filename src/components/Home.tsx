@@ -9,6 +9,7 @@ import {
 import React from "react";
 import { useEffect } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
+import { quoteTokenMint } from "../helpers/utils";
 import { loadQuoteBalance } from "../services/service.balance";
 import { createPool } from "../services/service.pool";
 import Pools from "./Pools";
@@ -53,8 +54,10 @@ function Home() {
   return (
     <>
       <div className="row">
-        <h2>Dashboard Here</h2>
+        <h2>Balance Here</h2>
         {quoteBalance}
+        <h2>Mint Here</h2>
+        {quoteTokenMint.toBase58()}
         {wallet.connected ? ( // <span>Trader Account: {trader}</span>
           <Button onClick={() => handleCreatePool()}>Create Pool</Button>
         ) : null}
