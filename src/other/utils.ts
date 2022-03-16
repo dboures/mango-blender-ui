@@ -48,7 +48,7 @@ if (process.env.REACT_APP_NETWORK === "MAINNET") {
     "8FRFC6MoGGkMFQwngccyu69VnYbzykGeez7ignHVAFSN"
   );
   mangoGroupPubkey = new PublicKey(
-    "5vQp48Wx55Ft1PUAx8qWbsioNaLeXWVkyCq2XpQSv34M"
+    "Ec2enZyoC4nGpEfu2sUNAa2nUGJHWxoUWYSEJ2hNTWTA" // devnet.2
   );
 } else {
   throw new Error(
@@ -104,7 +104,7 @@ export async function getOrCreateATA(provider: Provider, mint: PublicKey) {
   }
 }
 
-export async function derviePoolOwnedMangoAccount(
+export async function derivePoolOwnedMangoAccount(
   poolAddress: PublicKey
 ): Promise<[PublicKey, number]> {
   return PublicKey.findProgramAddress(

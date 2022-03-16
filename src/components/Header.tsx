@@ -44,17 +44,11 @@ import {
                 component="div"
                 sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
               >
-                Mango Blender
+                Mango Blender (Devnet)
               </Typography>
               <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
                 {wallet.connected ? (
                     wallet.publicKey?.toBase58()
-                //   links.map((link, i) => (
-                //       <Button key={i} component={Link} to={link} variant="contained" color="primary">
-                //       {pages[i]}
-                //     </Button>
-                //     )
-                // )
                 ) 
                 : (
                   null

@@ -19,8 +19,7 @@ import React from "react";
 import { useEffect } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { fetchPools } from "../services/service.pool";
-import { buyIntoPool, redeemFromPool } from "../services/service.transact";
-import { calculatePoolShare } from "../services/service.stats";
+import TransactModal from "./TransactModal";
 
 export interface Pool {
   key: PublicKey;
@@ -30,6 +29,7 @@ export interface Pool {
   iouMint: PublicKey;
   admin: PublicKey;
   mangoAccount: PublicKey;
+  share? : number;
 }
 
 function Pools() {
@@ -42,9 +42,11 @@ function Pools() {
   const [pools, setPools] = React.useState<Pool[]>([]);
 
   const refreshPools = () => {
-    fetchPools(provider).then((pools: Pool[]) => {
-      setPools(pools);
-    });
+    if(wallet?.connected) {
+      fetchPools(provider).then((pools: Pool[]) => {
+        setPools(pools);
+      });
+    }
   };
 
   useEffect(() => {
@@ -55,66 +57,77 @@ function Pools() {
   return (
     <>
       <div className="row">
-        <h2>Pool Here</h2>
-        {/* TODO: make table sortable */}
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Pool Name</TableCell>
-                <TableCell>Mango Account</TableCell>
-                <TableCell>Admin</TableCell>
-                <TableCell>View Mango Account</TableCell>
-                <TableCell>Buy Into/Redeem From Pool</TableCell>
-                {/* <TableCell>Current Value</TableCell>
-                  <TableCell>Ownership Share</TableCell> */}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {pools.length > 0
-                ? pools.map((pool: Pool) => {
-                    return (
-                      <TableRow key={pool.key.toString()}>
-                        <TableCell>{pool.poolName}</TableCell>
-                        <TableCell>{pool.key.toBase58()}</TableCell>
-                        <TableCell>{pool.admin.toBase58()}</TableCell>
-                        <TableCell>
-                          {/* TODO: mainnet (when it's time) */}
-                          <a
-                            href={
-                              "https://devnet.mango.markets/account?pubkey=" +
-                              pool.mangoAccount.toBase58()
-                            }
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          > 
-                            {pool.mangoAccount.toBase58()}
-                          </a>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            onClick={() => buyIntoPool(provider, pool, 1)}
-                          >
-                            BUY 1 QUOTE WORTH
-                          </Button>
-                          <Button
-                            onClick={() => redeemFromPool(provider, pool, 1)}
-                          >
-                            Redeem 1 QUOTE WORTH
-                          </Button>
-                          <Button
-                            onClick={() => calculatePoolShare(provider, pool)}
-                          >
-                            Pool Share
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                : null}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        { wallet?.connected ? (
+          <div className="row">
+          <div className="pool-header">
+          <h2>Active Pools</h2>
+          </div>
+          {/* TODO: make table sortable */}
+          <TableContainer component={Paper} sx={{maxWidth: 2000, margin: 'auto'}}>
+            <Table
+              sx={{ minWidth: 650 }}
+              size="medium"
+              aria-label="a dense table"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell>Pool Name</TableCell>
+                  <TableCell>Pool Key</TableCell>
+                  <TableCell>Admin Key</TableCell>
+                  <TableCell>View Mango Account</TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell>
+                  <span style ={{display: 'flex', justifyContent: 'center'}}>
+                  Ownership Share
+                            </span>
+                            </TableCell>
+                  {/* <TableCell>Current Value</TableCell> */}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {pools.length > 0
+                  ? pools.map((pool: Pool) => {
+                      return (
+                        <TableRow key={pool.key.toString()}>
+                          <TableCell>{pool.poolName}</TableCell>
+                          <TableCell>{pool.key.toBase58()}</TableCell>
+                          <TableCell>{pool.admin.toBase58()}</TableCell>
+                          <TableCell>
+                            {/* TODO: mainnet (when it's time) */}
+                            <a
+                              href={
+                                "https://devnet.mango.markets/account?pubkey=" +
+                                pool.mangoAccount.toBase58()
+                              }
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {pool.mangoAccount.toBase58()}
+                            </a>
+                          </TableCell>
+                          <TableCell>
+                            <TransactModal provider={provider} pool={pool} action={'deposit'} />
+                          </TableCell>
+                          <TableCell>
+                            <TransactModal provider={provider} pool={pool} action={'withdraw'} />
+                          </TableCell>
+                          <TableCell>
+                            <span style ={{display: 'flex', justifyContent: 'center'}}>
+                            {(pool.share ? pool.share * 100 : 0).toFixed(2)+ '%'}
+                            </span>
+                            </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  : null}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          </div>
+        )
+          : null
+        }
       </div>
     </>
   );

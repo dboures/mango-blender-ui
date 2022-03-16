@@ -16,8 +16,18 @@ import {
 import Header from "./components/Header";
 import Home from "./components/Home";
 // import "./App.css";
-// import { BrowserRouter } from "react-router-dom";
-import { ENDPOINT } from "./helpers/utils";
+import { SnackBarProvider } from "./other/SnackbarContext";
+import { ENDPOINT } from "./other/utils";
+
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const palette = {
+  primary: { main: '#3f51b5' },
+  secondary: { main: '#f50057' } // TODO: make theme
+};
+const themeName = 'mango';
+
+const mangoTheme = createTheme({ palette, themeName });
 
 
 function App() {
@@ -41,17 +51,19 @@ function App() {
 
   return (
     <div className="App">
+      <ThemeProvider theme={mangoTheme}>
       <ConnectionProvider endpoint={ENDPOINT}>
         <WalletProvider wallets={wallets}>
-          {/* <SnackBarProvider>
-            <BrowserRouter> */}
+          <SnackBarProvider>
+            {/* <BrowserRouter> */}
               <Header />
               <Home />
-              {/* <Sample /> */}
-            {/* </BrowserRouter>
-          </SnackBarProvider> */}
+               {/* <Sample /> 
+            </BrowserRouter> */}
+          </SnackBarProvider>
         </WalletProvider>
       </ConnectionProvider>
+      </ThemeProvider>
     </div>
   );
 }

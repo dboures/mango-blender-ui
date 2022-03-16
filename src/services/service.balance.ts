@@ -2,7 +2,7 @@ import { Provider } from "@project-serum/anchor";
 import { Connection, ParsedAccountData, PublicKey } from "@solana/web3.js";
 import { Balance } from "../components/Home";
 import { Pool } from "../components/Pools";
-import { findAssociatedTokenAddress, quoteTokenMint } from "../helpers/utils";
+import { findAssociatedTokenAddress, quoteTokenMint } from "../other/utils";
 
 const emptyBalance = {
   name: "USDC",
