@@ -19,7 +19,7 @@ import React from "react";
 import { useEffect } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { fetchPools } from "../services/service.pool";
-import { buyIntoPool } from "../services/service.transact";
+import { buyIntoPool, redeemFromPool } from "../services/service.transact";
 
 export interface Pool {
   key: PublicKey;
@@ -94,7 +94,12 @@ function Pools() {
                           <Button
                             onClick={() => buyIntoPool(provider, pool, 1)}
                           >
-                            BUY 10,000
+                            BUY 1 QUOTE WORTH
+                          </Button>
+                          <Button
+                            onClick={() => redeemFromPool(provider, pool, 1)}
+                          >
+                            Redeem 1 QUOTE WORTH
                           </Button>
                         </TableCell>
                       </TableRow>

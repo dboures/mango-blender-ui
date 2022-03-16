@@ -1,7 +1,18 @@
-import { MangoCache, MangoClient, MangoGroup, NodeBank, QUOTE_INDEX, RootBank } from "@blockworks-foundation/mango-client";
+import {
+  MangoCache,
+  MangoClient,
+  MangoGroup,
+  NodeBank,
+  QUOTE_INDEX,
+  RootBank,
+} from "@blockworks-foundation/mango-client";
 import { BN, Program, Provider } from "@project-serum/anchor";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
-import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  Token,
+  TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
 import { Commitment, PublicKey } from "@solana/web3.js";
 import data from "../mango_blender.json";
 require("dotenv").config();
@@ -16,7 +27,7 @@ export const BLENDER_PROG_ID = new PublicKey(
 export let ENDPOINT: string;
 
 if (process.env.REACT_APP_NETWORK === "MAINNET") {
-  console.log('mainnet')
+  console.log("mainnet");
   SERUM_PROG_ID = new PublicKey("9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin");
   MANGO_PROG_ID = new PublicKey("F2DZJhWauzr9jYcRi6MJWJd7D3SNwR1f5fDQj5oT9ofc");
   ENDPOINT = process.env.REACT_APP_MAINNET_ENDPOINT as string;
@@ -24,9 +35,11 @@ if (process.env.REACT_APP_NETWORK === "MAINNET") {
   quoteTokenMint = new PublicKey(
     "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
   );
-  mangoGroupPubkey = new PublicKey('98pjRuQjK3qA6gXts96PqZT4Ze5QmnCmt3QYjhbUSPue')
+  mangoGroupPubkey = new PublicKey(
+    "98pjRuQjK3qA6gXts96PqZT4Ze5QmnCmt3QYjhbUSPue"
+  );
 } else if (process.env.REACT_APP_NETWORK === "DEVNET") {
-  console.log('devnet')
+  console.log("devnet");
   SERUM_PROG_ID = new PublicKey("DESVgJVGajEgKGXhb6XmqDHGz3VjdgP7rEVESBgxmroY");
   MANGO_PROG_ID = new PublicKey("4skJ85cdxQAFVKbcGgfun8iZPL7BadVYXG3kGEGkufqA");
   ENDPOINT = process.env.REACT_APP_DEVNET_ENDPOINT as string;
@@ -34,7 +47,9 @@ if (process.env.REACT_APP_NETWORK === "MAINNET") {
   quoteTokenMint = new PublicKey(
     "8FRFC6MoGGkMFQwngccyu69VnYbzykGeez7ignHVAFSN"
   );
-  mangoGroupPubkey = new PublicKey('5vQp48Wx55Ft1PUAx8qWbsioNaLeXWVkyCq2XpQSv34M')
+  mangoGroupPubkey = new PublicKey(
+    "5vQp48Wx55Ft1PUAx8qWbsioNaLeXWVkyCq2XpQSv34M"
+  );
 } else {
   throw new Error(
     `Network unrecognized. Should be mainnet or devnet. Currently: ${process.env.NETWORK}`
@@ -51,7 +66,7 @@ export function loadProgram(provider: Provider): Program {
 }
 
 export async function findAssociatedTokenAddress(
-  walletAddress: PublicKey,
+  provider: Provider,
   tokenMintAddress: PublicKey
 ): Promise<PublicKey> {
   const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID: PublicKey = new PublicKey(
@@ -60,7 +75,7 @@ export async function findAssociatedTokenAddress(
   return (
     await PublicKey.findProgramAddress(
       [
-        walletAddress.toBuffer(),
+        provider.wallet.publicKey.toBuffer(),
         TOKEN_PROGRAM_ID.toBuffer(),
         tokenMintAddress.toBuffer(),
       ],
@@ -70,7 +85,7 @@ export async function findAssociatedTokenAddress(
 }
 
 export async function getOrCreateATA(provider: Provider, mint: PublicKey) {
-  const address = await findAssociatedTokenAddress(provider.wallet.publicKey, mint);
+  const address = await findAssociatedTokenAddress(provider, mint);
   const accountInfo = await provider.connection.getAccountInfo(address);
   if (accountInfo) {
     return { address, instruction: null };
@@ -84,7 +99,7 @@ export async function getOrCreateATA(provider: Provider, mint: PublicKey) {
         address,
         provider.wallet.publicKey,
         provider.wallet.publicKey
-      )
+      ),
     };
   }
 }
@@ -124,23 +139,24 @@ export async function derivePoolIouAddress(
   );
 }
 
-
-export async function loadMangoObjects(provider: Provider): Promise<[MangoGroup, MangoCache, RootBank, NodeBank[]]> {
+export async function loadMangoObjects(
+  provider: Provider
+): Promise<[MangoGroup, MangoCache, RootBank, NodeBank[]]> {
   const client = new MangoClient(provider.connection, MANGO_PROG_ID);
   const mangoGroup = await client.getMangoGroup(mangoGroupPubkey);
-    const [rootBanks, mangoCache] = await Promise.all([
-      mangoGroup.loadRootBanks(provider.connection),
-      mangoGroup.loadCache(provider.connection)
-    ]);
-    const nodeBanks = await rootBanks[QUOTE_INDEX]?.loadNodeBanks(
-      provider.connection
-    );
-    if (!rootBanks[QUOTE_INDEX]) {
-      throw new Error('Error loading quote root bank');
-    }
-    if(!nodeBanks) {
-      throw new Error('Error loading node banks');
-    }
-    const quoteRootBank = rootBanks[QUOTE_INDEX] as RootBank;
-    return [mangoGroup, mangoCache, quoteRootBank, nodeBanks]
+  const [rootBanks, mangoCache] = await Promise.all([
+    mangoGroup.loadRootBanks(provider.connection),
+    mangoGroup.loadCache(provider.connection),
+  ]);
+  const nodeBanks = await rootBanks[QUOTE_INDEX]?.loadNodeBanks(
+    provider.connection
+  );
+  if (!rootBanks[QUOTE_INDEX]) {
+    throw new Error("Error loading quote root bank");
+  }
+  if (!nodeBanks) {
+    throw new Error("Error loading node banks");
+  }
+  const quoteRootBank = rootBanks[QUOTE_INDEX] as RootBank;
+  return [mangoGroup, mangoCache, quoteRootBank, nodeBanks];
 }

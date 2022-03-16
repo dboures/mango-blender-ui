@@ -12,10 +12,7 @@ const emptyBalance = {
 
 export async function loadQuoteBalance(provider: Provider): Promise<Balance> {
   if (provider?.wallet?.publicKey) {
-    const quoteATA = await findAssociatedTokenAddress(
-      provider.wallet.publicKey,
-      quoteTokenMint
-    );
+    const quoteATA = await findAssociatedTokenAddress(provider, quoteTokenMint);
     const tokenData = await provider.connection.getParsedAccountInfo(quoteATA);
     if (tokenData.value) {
       const tokenInfo = (tokenData.value?.data as ParsedAccountData).parsed
