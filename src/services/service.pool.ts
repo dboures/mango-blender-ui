@@ -58,7 +58,7 @@ export async function createPool(poolName: string, provider: Provider) {
   console.log(tx);
 }
 
-export async function fetchPools(provider: Provider) {
+export async function fetchPools(provider: Provider): Promise<Pool[]> {
   const program = loadProgram(provider);
   const rawPools = await program.account.pool.all();
   const pools = await Promise.all(

@@ -20,6 +20,7 @@ import { useEffect } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { fetchPools } from "../services/service.pool";
 import { buyIntoPool, redeemFromPool } from "../services/service.transact";
+import { calculatePoolShare } from "../services/service.stats";
 
 export interface Pool {
   key: PublicKey;
@@ -85,7 +86,7 @@ function Pools() {
                               pool.mangoAccount.toBase58()
                             }
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                           > 
                             {pool.mangoAccount.toBase58()}
                           </a>
@@ -100,6 +101,11 @@ function Pools() {
                             onClick={() => redeemFromPool(provider, pool, 1)}
                           >
                             Redeem 1 QUOTE WORTH
+                          </Button>
+                          <Button
+                            onClick={() => calculatePoolShare(provider, pool)}
+                          >
+                            Pool Share
                           </Button>
                         </TableCell>
                       </TableRow>
