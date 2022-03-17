@@ -63,22 +63,22 @@ function Pools() {
           <h2>Active Pools</h2>
           </div>
           {/* TODO: make table sortable */}
-          <TableContainer component={Paper} sx={{maxWidth: 2000, margin: 'auto'}}>
+          <TableContainer component={Paper} sx={{maxWidth: 2000, margin: 'auto', backgroundColor: '#2A2440'}}>
             <Table
               sx={{ minWidth: 650 }}
               size="medium"
               aria-label="a dense table"
             >
               <TableHead>
-                <TableRow>
-                  <TableCell>Pool Name</TableCell>
-                  <TableCell>Pool Key</TableCell>
-                  <TableCell>Admin Key</TableCell>
-                  <TableCell>View Mango Account</TableCell>
+                <TableRow style ={{color:'#2A2440'}}>
+                  <TableCell style ={{color:'#fff'}}>Pool Name</TableCell>
+                  <TableCell style ={{color:'#fff'}}>Pool Key</TableCell>
+                  <TableCell style ={{color:'#fff'}}>Admin Key</TableCell>
+                  <TableCell style ={{color:'#fff'}}>View Mango Account</TableCell>
                   <TableCell> </TableCell>
                   <TableCell> </TableCell>
                   <TableCell>
-                  <span style ={{display: 'flex', justifyContent: 'center'}}>
+                  <span style ={{display: 'flex', justifyContent: 'center', color:'#fff'}}>
                   Ownership Share
                             </span>
                             </TableCell>
@@ -90,10 +90,10 @@ function Pools() {
                   ? pools.map((pool: Pool) => {
                       return (
                         <TableRow key={pool.key.toString()}>
-                          <TableCell>{pool.poolName}</TableCell>
-                          <TableCell>{pool.key.toBase58()}</TableCell>
-                          <TableCell>{pool.admin.toBase58()}</TableCell>
-                          <TableCell>
+                          <TableCell style ={{color:'#fff'}}>{pool.poolName}</TableCell>
+                          <TableCell style ={{color:'#fff'}}>{pool.key.toBase58()}</TableCell>
+                          <TableCell style ={{color:'#fff'}}>{pool.admin.toBase58()}</TableCell>
+                          <TableCell style ={{color:'#fff'}}>
                             {/* TODO: mainnet (when it's time) */}
                             <a
                               href={
@@ -102,17 +102,18 @@ function Pools() {
                               }
                               target="_blank"
                               rel="noopener noreferrer"
+                              style={{color:"#FF9C24"}}
                             >
                               {pool.mangoAccount.toBase58()}
                             </a>
                           </TableCell>
                           <TableCell>
-                            <TransactModal provider={provider} pool={pool} action={'deposit'} />
+                            <TransactModal provider={provider} pool={pool} action={'deposit'} refresh={refreshPools}  />
                           </TableCell>
                           <TableCell>
-                            <TransactModal provider={provider} pool={pool} action={'withdraw'} />
+                            <TransactModal provider={provider} pool={pool} action={'withdraw'} refresh={refreshPools} />
                           </TableCell>
-                          <TableCell>
+                          <TableCell style ={{color:'#fff'}}>
                             <span style ={{display: 'flex', justifyContent: 'center'}}>
                             {(pool.share ? pool.share * 100 : 0).toFixed(2)+ '%'}
                             </span>
@@ -124,6 +125,9 @@ function Pools() {
               </TableBody>
             </Table>
           </TableContainer>
+          <div style = {{ display: 'flex', justifyContent: 'center', alignContent: 'center', marginTop:10}} className="row">
+            <Button onClick={refreshPools}>Refresh Pools</Button>
+            </div>
           </div>
         )
           : null

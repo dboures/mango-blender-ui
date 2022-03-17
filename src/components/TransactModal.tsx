@@ -32,6 +32,7 @@ function TransactModal(props: {
   provider: Provider;
   pool: Pool;
   action: "deposit" | "withdraw";
+  refresh: Function;
 }) {
   const [showTransactModal, setShowTransactModal] = useState(false);
   const [transactAmount, setTransactAmount] = useState("");
@@ -51,6 +52,7 @@ function TransactModal(props: {
     if (success) {
       snackBarActions.showSnackBar("Successfully bought into pool", "success");
       setTransactAmount("");
+      props.refresh();
     } else {
       snackBarActions.showSnackBar("Error, please try again", "error");
     }
@@ -61,6 +63,7 @@ function TransactModal(props: {
     if (success) {
       snackBarActions.showSnackBar("Successful redemption", "success");
       setTransactAmount("");
+      props.refresh();
     } else {
       snackBarActions.showSnackBar("Error, please try again", "error");
     }
@@ -68,7 +71,7 @@ function TransactModal(props: {
 
   return (
     <div>
-      <Button onClick={openTransactModal}>
+      <Button style ={{color:'#fff', backgroundColor: '#37324D'}} onClick={openTransactModal}>
         {props.action === "deposit" ? "Buy Into Pool" : "Redeem"}
       </Button>
       <br></br>

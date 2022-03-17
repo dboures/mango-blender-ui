@@ -18,12 +18,17 @@ import Home from "./components/Home";
 // import "./App.css";
 import { SnackBarProvider } from "./other/SnackbarContext";
 import { ENDPOINT } from "./other/utils";
-
+import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const palette = {
-  primary: { main: '#3f51b5' },
-  secondary: { main: '#f50057' } // TODO: make theme
+  primary: { 
+    main: '#1D1832',
+    contrastText: "#fff" 
+  },
+  background: {
+    default: '#141026',
+  }
 };
 const themeName = 'mango';
 
@@ -52,6 +57,7 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider theme={mangoTheme}>
+      <CssBaseline />
       <ConnectionProvider endpoint={ENDPOINT}>
         <WalletProvider wallets={wallets}>
           <SnackBarProvider>

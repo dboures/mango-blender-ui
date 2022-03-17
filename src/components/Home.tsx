@@ -1,4 +1,4 @@
-import { Button, FormControl, Grid, TextField } from "@mui/material";
+import { Button, FormControl, Grid, Paper, TextField } from "@mui/material";
 import { Provider } from "@project-serum/anchor";
 import {
   AnchorWallet,
@@ -56,23 +56,22 @@ function Home() {
 
   return (
     <>
-      <div className="row">
-        {/* <h2>Balance Here</h2>
-        {quoteBalance}
-        <h2>Mint Here</h2>
-        {quoteTokenMint.toBase58()}
-        
-        <h3>Input</h3>
-         <input type="text" name="newPoolName" value={newPoolName} onChange={e => setNewPoolName(e.target.value)} /> */}
-
+      <div className="row" style = {{ display: 'flex', justifyContent: 'center', alignContent: 'center'}}>
+    {
+    wallet?.connected ? (
+      <Paper style={{width: 500, marginTop: 15, marginBottom: 15, backgroundColor: '#2A2440' }} elevation={3}> 
          <Grid container spacing={2}>
-              <Grid item xs={2}>
+         <Grid style = {{ display: 'flex', justifyContent: 'center', alignContent: 'center'}} item xs={12}>
+         <h2 style={{color: '#fff'}}> Create New Pool</h2>
+         </Grid>
+          
+         <Grid item xs={1}></Grid>
+              <Grid item xs={8} style = {{ display: 'flex', justifyContent: 'center', alignContent: 'center', marginBottom: 15, color:'#fff'}}>
               <FormControl fullWidth>
                   <TextField
                     id="outlined-basic"
                     label="Pool Name"
                     variant="outlined"
-                    type="number"
                     value={newPoolName}
                     onChange={(e) => setNewPoolName(e.target.value)}
                   />
@@ -80,17 +79,19 @@ function Home() {
               </Grid>
 
               <Grid item xs={2}>
-                {wallet.connected ? ( // <span>Trader Account: {trader}</span>
-              <Button disabled={newPoolName.length <= 0} onClick={() => handleCreatePool()}>Create Pool</Button>
-            ) : null}
+              <Button disabled={newPoolName.length <= 0 && wallet?.connected} onClick={() => handleCreatePool()}>Create Pool</Button>
+            <Grid item xs={1}></Grid>
             </Grid>
             {/* <Grid item xs={2}></Grid>
               <Grid item xs={6}>
                 Pool Details here
               </Grid>
             */}
-              
             </Grid> 
+              </Paper>
+    ): (<h2 style={{color: 'white'}}>Please Connect Wallet</h2>) 
+    }
+
       </div>
       <div className="row">
         <Pools/>

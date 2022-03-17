@@ -16,6 +16,7 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #fff;
 }
 
 #modal-modal-title {
@@ -24,4 +25,8 @@ code {
   justify-content: center;
   margin-bottom: 10px;
   margin-top: 10px;
+}
+
+.has-text {
+  color: #fff;
 }
