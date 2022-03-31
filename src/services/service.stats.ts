@@ -9,5 +9,5 @@ export async function calculatePoolShare(provider: Provider, pool: Pool) {
         loadIouBalance(provider, pool)
     ]);
 
-    return providerIouBalance.amount / (iouMintInfo.supply.toNumber() / 1000000); // TODO: don't like this
+    return (providerIouBalance.amount / new BN(iouMintInfo.supply).toNumber() / 1000000); // TODO: don't like this
 }
