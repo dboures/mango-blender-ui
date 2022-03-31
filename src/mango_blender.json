@@ -63,6 +63,10 @@
         {
           "name": "iouMintBump",
           "type": "u8"
+        },
+        {
+          "name": "feeBasis",
+          "type": "u8"
         }
       ]
     },
@@ -196,12 +200,27 @@
           "isSigner": false
         },
         {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "adminTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "withdrawerTokenAccount",
           "isMut": true,
           "isSigner": false
         },
         {
           "name": "poolIouMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "adminIouTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -249,12 +268,16 @@
           {
             "name": "admin",
             "type": "publicKey"
+          },
+          {
+            "name": "feeBasis",
+            "type": "u8"
           }
         ]
       }
     }
   ],
   "metadata": {
-    "address": "HzJMW7y12YSPDZMWNeqKDR51QnHwhF3TB96CZsPhpNoB"
+    "address": "3XGFKm9rzDUCt3VHRDbrMy9kejY9sT1RDJfKHM62REqg"
   }
 }

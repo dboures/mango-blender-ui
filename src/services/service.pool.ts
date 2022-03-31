@@ -1,6 +1,7 @@
 import { Provider } from "@project-serum/anchor";
 import { utf8 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import BN from "bn.js";
 import {
   Connection,
   ParsedAccountData,
@@ -40,6 +41,7 @@ export async function createPool(poolName: string, provider: Provider): Promise<
       poolNameBytes,
       poolBump,
       poolIouBump,
+      new BN(138), // fees are twice, once quote and once iou
       {
         accounts: {
           pool: poolAddress,

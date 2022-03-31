@@ -22,23 +22,10 @@ export let MANGO_PROG_ID: PublicKey;
 export let quoteTokenMint: PublicKey;
 export let mangoGroupPubkey: PublicKey;
 export const BLENDER_PROG_ID = new PublicKey(
-  "HzJMW7y12YSPDZMWNeqKDR51QnHwhF3TB96CZsPhpNoB"
+  "3XGFKm9rzDUCt3VHRDbrMy9kejY9sT1RDJfKHM62REqg"
 );
 export let ENDPOINT: string;
 
-if (process.env.REACT_APP_NETWORK === "MAINNET") {
-  console.log("mainnet");
-  SERUM_PROG_ID = new PublicKey("9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin");
-  MANGO_PROG_ID = new PublicKey("F2DZJhWauzr9jYcRi6MJWJd7D3SNwR1f5fDQj5oT9ofc");
-  ENDPOINT = process.env.REACT_APP_MAINNET_ENDPOINT as string;
-  //TODO: use IDS.json
-  quoteTokenMint = new PublicKey(
-    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
-  );
-  mangoGroupPubkey = new PublicKey(
-    "98pjRuQjK3qA6gXts96PqZT4Ze5QmnCmt3QYjhbUSPue"
-  );
-} else if (process.env.REACT_APP_NETWORK === "DEVNET") {
   console.log("devnet");
   SERUM_PROG_ID = new PublicKey("DESVgJVGajEgKGXhb6XmqDHGz3VjdgP7rEVESBgxmroY");
   MANGO_PROG_ID = new PublicKey("4skJ85cdxQAFVKbcGgfun8iZPL7BadVYXG3kGEGkufqA");
@@ -50,11 +37,7 @@ if (process.env.REACT_APP_NETWORK === "MAINNET") {
   mangoGroupPubkey = new PublicKey(
     "Ec2enZyoC4nGpEfu2sUNAa2nUGJHWxoUWYSEJ2hNTWTA" // devnet.2
   );
-} else {
-  throw new Error(
-    `Network unrecognized. Should be mainnet or devnet. Currently: ${process.env.NETWORK}`
-  );
-}
+
 
 export const COMMITTMENT: Commitment = "processed";
 

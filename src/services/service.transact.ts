@@ -2,6 +2,7 @@ import { BN, Provider } from "@project-serum/anchor";
 import { Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { PublicKey, Transaction } from "@solana/web3.js";
 import {
+  derivePoolOwnedMangoAccount,
   findAssociatedTokenAddress,
   getOrCreateATA,
   loadMangoObjects,
@@ -102,12 +103,25 @@ export async function redeemFromPool(
         client.getMangoAccount(pool.mangoAccount, SERUM_PROG_ID),
         loadMangoObjects(provider),
       ]);
-  
     const [withdrawerIouATA, withdrawerQuoteATAResult] = await Promise.all([
       findAssociatedTokenAddress(provider, pool.iouMint),
       getOrCreateATA(provider, quoteTokenMint),
     ]);
+
+        // todo: fix this
+
+    const adminIouATA = new PublicKey("2mmr2rxi36czoibVMPqVyU3QRW41U9DNwdACifXdNCrF")
+    const adminQuoteATA = new PublicKey("7tdaU3HSj9AwPZHhCjeh3yhrDMj4JDHUKLVhCeb59Khz")
+    const admin = new PublicKey("421wr4fGV1P9doQUVfmV9bkWzipJgv9E7aGUGdZrpdcp")
+
+    /*
   
+    const [adminIouATA, adminQuoteATA] = await Promise.all([
+      findAssociatedTokenAddress(provider, pool.iouMint),
+      getOrCreateATA(provider, quoteTokenMint),
+    ]);
+
+    */
     const openOrdersKeys = mangoAccount.getOpenOrdersKeysInBasket();
     const remainingAccounts = openOrdersKeys.map((key) => {
       return { pubkey: key, isWritable: false, isSigner: false };
@@ -122,6 +136,9 @@ export async function redeemFromPool(
       withdrawQuoteQuantity,
       {
         accounts: {
+          admin: admin,
+          adminIouTokenAccount: adminIouATA,
+          adminTokenAccount: adminQuoteATA,
           mangoProgram: MANGO_PROG_ID,
           pool: pool.key,
           mangoGroup: mangoGroup.publicKey,
