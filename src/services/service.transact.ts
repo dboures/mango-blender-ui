@@ -40,7 +40,13 @@ export async function buyIntoPool(
       findAssociatedTokenAddress(provider, quoteTokenMint),
       getOrCreateATA(provider, pool.iouMint),
     ]);
-  
+
+    // todo: fix this
+    const admin = new PublicKey("BfTKqcd3K8GFz2FrRMY7sDY5nqYuYazGPKoY26zSr2mR")
+    const fanoutIouATA = new PublicKey("9VUGCqGwPa4brZHJ5P9EPBUYWGqaPMMegZVuKMFku84k")
+    const fanoutQuoteATA = new PublicKey("2TdnkohtM2YggGVBTgAL4xFV3HatHb3rAWhv56YDa8zJ")
+    const fanout = new PublicKey("A2PNtUCVzM5iK7ePQCa9Tdf4HHwzjkzYMju613QH9Ufu")
+    
     const openOrdersKeys = mangoAccount.getOpenOrdersKeysInBasket();
     const remainingAccounts = openOrdersKeys.map((key) => {
       return { pubkey: key, isWritable: false, isSigner: false };
@@ -55,6 +61,10 @@ export async function buyIntoPool(
       depositQuoteQuantity,
       {
         accounts: {
+          admin: admin,
+          fanout: fanout,
+          fanoutIouTokenAccount: fanoutIouATA,
+          fanoutTokenAccount: fanoutQuoteATA,
           mangoProgram: MANGO_PROG_ID,
           pool: pool.key,
           mangoGroup: mangoGroup.publicKey,
@@ -66,6 +76,7 @@ export async function buyIntoPool(
           nodeBank: nodeBanks[0].publicKey,
           vault: nodeBanks[0].vault,
           poolIouMint: pool.iouMint,
+          depositorTokenAccount: buyerQuoteATA,
           depositorIouTokenAccount: buyerIouATAResult.address,
           tokenProgram: TOKEN_PROGRAM_ID,
         },
@@ -110,9 +121,10 @@ export async function redeemFromPool(
 
         // todo: fix this
 
-    const adminIouATA = new PublicKey("2mmr2rxi36czoibVMPqVyU3QRW41U9DNwdACifXdNCrF")
-    const adminQuoteATA = new PublicKey("7tdaU3HSj9AwPZHhCjeh3yhrDMj4JDHUKLVhCeb59Khz")
-    const admin = new PublicKey("421wr4fGV1P9doQUVfmV9bkWzipJgv9E7aGUGdZrpdcp")
+    const admin = new PublicKey("BfTKqcd3K8GFz2FrRMY7sDY5nqYuYazGPKoY26zSr2mR")
+    const fanoutIouATA = new PublicKey("9VUGCqGwPa4brZHJ5P9EPBUYWGqaPMMegZVuKMFku84k")
+    const fanoutQuoteATA = new PublicKey("2TdnkohtM2YggGVBTgAL4xFV3HatHb3rAWhv56YDa8zJ")
+    const fanout = new PublicKey("A2PNtUCVzM5iK7ePQCa9Tdf4HHwzjkzYMju613QH9Ufu")
 
     /*
   
@@ -137,8 +149,9 @@ export async function redeemFromPool(
       {
         accounts: {
           admin: admin,
-          adminIouTokenAccount: adminIouATA,
-          adminTokenAccount: adminQuoteATA,
+          fanout: fanout,
+          fanoutIouTokenAccount: fanoutIouATA,
+          fanoutTokenAccount: fanoutQuoteATA,
           mangoProgram: MANGO_PROG_ID,
           pool: pool.key,
           mangoGroup: mangoGroup.publicKey,

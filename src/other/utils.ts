@@ -22,7 +22,7 @@ export let MANGO_PROG_ID: PublicKey;
 export let quoteTokenMint: PublicKey;
 export let mangoGroupPubkey: PublicKey;
 export const BLENDER_PROG_ID = new PublicKey(
-  "3XGFKm9rzDUCt3VHRDbrMy9kejY9sT1RDJfKHM62REqg"
+  "6iwLfHKbjvrmQ9jSWAvVu1C8zdWReX2s8XX9yFmvM6p5"
 );
 export let ENDPOINT: string;
 
